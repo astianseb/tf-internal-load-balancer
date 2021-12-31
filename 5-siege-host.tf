@@ -6,7 +6,7 @@ resource "google_compute_instance" "siege-host" {
   name         = "siege-host"
   machine_type = "e2-medium"
   zone         = "europe-central2-a"
-  project      = local.project_id
+  project      = google_project.project.project_id
 
   tags = ["siege"]
 

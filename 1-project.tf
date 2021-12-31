@@ -1,7 +1,3 @@
-variable "project_name" {}
-
-variable "billing_account" {}
-
 resource "random_id" "id" {
   byte_length = 4
   prefix      = var.project_name

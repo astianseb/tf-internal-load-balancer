@@ -1,7 +1,7 @@
 # Network load balancer, loadbalanding TCP traffic
 # Source IP address is preserved (no proxy)
 resource "google_compute_region_backend_service" "app-backend" {
-  project               = local.project_id
+  project               = google_project.project.project_id
   load_balancing_scheme = "INTERNAL"
 
   backend {
@@ -21,10 +21,11 @@ resource "google_compute_region_backend_service" "app-backend" {
 
 #Forwarding rule
 resource "google_compute_forwarding_rule" "app-forwarding-rule" {
-  name                  = "l4-ilb-forwarding-rule"
-  project               = local.project_id
-  backend_service       = google_compute_region_backend_service.app-backend.id
   provider              = google-beta
+  region                = var.region
+  project               = google_project.project.project_id
+  name                  = "l4-ilb-forwarding-rule"
+  backend_service       = google_compute_region_backend_service.app-backend.id
   ports                 = ["80"]
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"

@@ -1,7 +1,7 @@
 
 resource "google_compute_health_check" "tcp-health-check" {
   name               = "tcp-health-check"
-  project            = local.project_id
+  project            = google_project.project.project_id
   timeout_sec        = 1
   check_interval_sec = 1
 
@@ -15,7 +15,7 @@ resource "google_compute_health_check" "tcp-health-check" {
 // ------------- Instance Group A
 resource "google_compute_instance_template" "tmpl-instance-group-1" {
   name                 = "instance-group-1"
-  project              = local.project_id
+  project              = google_project.project.project_id
   description          = "SG instance group of preemptible hosts"
   instance_description = "description assigned to instances"
   machine_type         = "e2-medium"
@@ -38,7 +38,7 @@ resource "google_compute_instance_template" "tmpl-instance-group-1" {
   network_interface {
     network            = google_compute_network.vpc_network.name
     subnetwork         = google_compute_subnetwork.sb-subnet-a.name
-    subnetwork_project = local.project_id
+    subnetwork_project = google_project.project.project_id
   }
 
   metadata = {
@@ -49,7 +49,7 @@ resource "google_compute_instance_template" "tmpl-instance-group-1" {
 #MIG-a
 resource "google_compute_instance_group_manager" "grp-instance-group-1" {
   name               = "instance-group-1"
-  project            = local.project_id
+  project            = google_project.project.project_id
   base_instance_name = "mig-a"
   zone               = local.zone-a
   version {
@@ -64,7 +64,7 @@ resource "google_compute_instance_group_manager" "grp-instance-group-1" {
 
 resource "google_compute_autoscaler" "obj-my-autoscaler-a" {
   name    = "my-autoscaler-a"
-  project = local.project_id
+  project = google_project.project.project_id
   zone    = local.zone-a
   target  = google_compute_instance_group_manager.grp-instance-group-1.id
 
@@ -84,7 +84,7 @@ resource "google_compute_autoscaler" "obj-my-autoscaler-a" {
 
 resource "google_compute_instance_template" "tmpl-instance-group-2" {
   name                 = "instance-group-2"
-  project              = local.project_id
+  project              = google_project.project.project_id
   description          = "SG instance group of preemptible hosts"
   instance_description = "description assigned to instances"
   machine_type         = "e2-medium"
@@ -106,7 +106,7 @@ resource "google_compute_instance_template" "tmpl-instance-group-2" {
   network_interface {
     network            = google_compute_network.vpc_network.name
     subnetwork         = google_compute_subnetwork.sb-subnet-b.name
-    subnetwork_project = local.project_id
+    subnetwork_project = google_project.project.project_id
   }
 
   metadata = {
@@ -116,7 +116,7 @@ resource "google_compute_instance_template" "tmpl-instance-group-2" {
 
 resource "google_compute_instance_group_manager" "grp-instance-group-2" {
   name               = "instance-group-2"
-  project            = local.project_id
+  project            = google_project.project.project_id
   base_instance_name = "mig-b"
   zone               = local.zone-b
   version {
@@ -131,7 +131,7 @@ resource "google_compute_instance_group_manager" "grp-instance-group-2" {
 
 resource "google_compute_autoscaler" "obj-my-autoscaler-b" {
   name    = "my-autoscaler-b"
-  project = local.project_id
+  project = google_project.project.project_id
   zone    = local.zone-b
   target  = google_compute_instance_group_manager.grp-instance-group-2.id
 

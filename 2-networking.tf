@@ -4,7 +4,7 @@ resource "google_compute_network" "vpc_network" {
   name                    = "my-internal-app"
   auto_create_subnetworks = false
   mtu                     = 1460
-  project                 = local.project_id
+  project                 = google_project.project.project_id
 }
 
 
@@ -12,14 +12,14 @@ resource "google_compute_network" "vpc_network" {
 
 resource "google_compute_subnetwork" "sb-subnet-a" {
   name          = "subnet-a"
-  project       = local.project_id
+  project       = google_project.project.project_id
   ip_cidr_range = "10.10.20.0/24"
   network       = google_compute_network.vpc_network.id
 }
 
 resource "google_compute_subnetwork" "sb-subnet-b" {
   name          = "subnet-b"
-  project       = local.project_id
+  project       = google_project.project.project_id
   ip_cidr_range = "10.10.30.0/24"
   network       = google_compute_network.vpc_network.id
 }
@@ -28,7 +28,7 @@ resource "google_compute_subnetwork" "sb-subnet-b" {
 
 resource "google_compute_firewall" "fw-allow-internal" {
   name      = "allow-internal"
-  project   = local.project_id
+  project   = google_project.project.project_id
   network   = google_compute_network.vpc_network.name
   direction = "INGRESS"
 
@@ -48,7 +48,7 @@ resource "google_compute_firewall" "fw-allow-internal" {
 
 resource "google_compute_firewall" "fw-allow-ssh" {
   name      = "allow-ssh"
-  project   = local.project_id
+  project   = google_project.project.project_id
   network   = google_compute_network.vpc_network.name
   direction = "INGRESS"
 
@@ -61,7 +61,7 @@ resource "google_compute_firewall" "fw-allow-ssh" {
 
 resource "google_compute_firewall" "fw-app-allow-http" {
   name      = "app-allow-http"
-  project   = local.project_id
+  project   = google_project.project.project_id
   network   = google_compute_network.vpc_network.name
   direction = "INGRESS"
 
@@ -75,7 +75,7 @@ resource "google_compute_firewall" "fw-app-allow-http" {
 
 resource "google_compute_firewall" "fw-app-allow-health-check" {
   name      = "app-allow-health-check"
-  project   = local.project_id
+  project   = google_project.project.project_id
   network   = google_compute_network.vpc_network.name
   direction = "INGRESS"
 
@@ -90,7 +90,7 @@ resource "google_compute_firewall" "fw-app-allow-health-check" {
 
 resource "google_compute_router" "router" {
   name    = "my-router"
-  project = local.project_id
+  project = google_project.project.project_id
   network = google_compute_network.vpc_network.id
 
   bgp {
@@ -100,7 +100,7 @@ resource "google_compute_router" "router" {
 
 resource "google_compute_router_nat" "nat" {
   name                               = "my-router-nat"
-  project                            = local.project_id
+  project                            = google_project.project.project_id
   router                             = google_compute_router.router.name
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
